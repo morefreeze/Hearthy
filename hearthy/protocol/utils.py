@@ -55,7 +55,8 @@ _gametag_to_enum = {
 def format_tag_value(tag, value):
     enum = _gametag_to_enum.get(tag, None)
     if enum:
-        return '{0}:{1}'.format(value, enum(value))
+        # return '{0}:{1}'.format(value, enum(value))
+        return '%s:%s' %(value, enum(value))
     else:
         return str(value)
 
