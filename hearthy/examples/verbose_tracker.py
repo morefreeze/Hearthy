@@ -43,7 +43,7 @@ class HeathyServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
                             del d[event.stream_id]
                 elif isinstance(event, hcapng.EvNewConnection):
                     d[event.stream_id] = HeathyServer.Connection(event.source, event.dest)
-        print(len(d))
+        # import pdb; pdb.set_trace()
 
         server_thread.join()
 
@@ -71,7 +71,14 @@ class HeathyServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
             s.end_headers()
 
             server_dict = HeathyServer.d
-            wd = server_dict[3]._t._world.transaction()
+            wd = {}
+            # get the last valid world
+            for k in server_dict:
+                tmp_wd = server_dict[k]._t._world.transaction()
+                # normal world at least 67 items
+                if 67 in tmp_wd:
+                    wd = tmp_wd
+
             # sb is string builder for response data.
             sb = ''
             o = urllib.parse.urlparse(s.path)
