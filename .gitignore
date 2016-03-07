@@ -65,3 +65,5 @@ target/
 bnet/
 pegasus/
 src/
+*.hcapng
+

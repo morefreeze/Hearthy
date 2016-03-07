@@ -22,13 +22,14 @@ class Processor:
             for power in what.list:
                 self._process_power(power, t)
         else:
-            self.logger.info('Ignoring packet of type {0}'.format(what.__class__.__name__))
+            pass
+            # self.logger.info('Ignoring packet of type {0}'.format(what.__class__.__name__))
 
     def _process_create_game(self, what, t):
         eid, taglist = (what.game_entity.id,
                         [(t.name, t.value) for t in what.game_entity.tags])
         if eid in t:
-            print('INFO: Game Entity already exists, ignoring "create game" event')
+            # print('INFO: Game Entity already exists, ignoring "create game" event')
             return
 
         logging.debug('Got game entity:\n{0}'.format(what.game_entity))
@@ -88,3 +89,5 @@ class Processor:
             pass
         if power.HasField('meta_data'):
             pass
+            # e = power.meta_data
+            # logger.debug('{0}'.format(e))
