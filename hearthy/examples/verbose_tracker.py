@@ -20,12 +20,14 @@ class HeathyServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
         :file_name: pcapng file
 
         """
-        server = socketserver.ThreadingTCPServer((ip, port), HeathyServer.HearthyHandler)
-        server_thread = threading.Thread(target=server.serve_forever)
+        start_func = None
+        if ip != '' and port > 0:
+            server = socketserver.ThreadingTCPServer((ip, port), HeathyServer.HearthyHandler)
+            start_func = server.serve_forever
+        server_thread = threading.Thread(target=start_func)
         server_thread.daemon = True
         server_thread.start()
 
-        print("serving at port", port)
         d = HeathyServer.d
         with open(file_name, 'rb') as f:
             parser = hcapng.parse(f)
@@ -117,7 +119,7 @@ class HeathyServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
                 ret += "\n"
             if len(ids) == 0:
                 return 'No such ids %s' %(params.get('id', []))
-            print(ret)
+            # print(ret)
             return ret
 
         func_map = {
@@ -135,6 +137,10 @@ if __name__ == '__main__':
     import logging
     logging.getLogger().setLevel(logging.DEBUG)
 
-    PORT = 4008
-    HeathyServer.start("", PORT, sys.argv[1])
+    ip = ''
+    port = 0
+    if len(sys.argv) >= 4:
+        ip = sys.argv[2]
+        port = int(sys.argv[3])
+    HeathyServer.start(ip, port, sys.argv[1])
 

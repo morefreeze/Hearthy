@@ -32,7 +32,11 @@ class Processor:
             # print('INFO: Game Entity already exists, ignoring "create game" event')
             return
 
-        logging.debug('Got game entity:\n{0}'.format(what.game_entity))
+        logging.info('Got game entity: {0}'.format(what.game_entity.id))
+        logging.debug('With tags: \n' + '\n'.join(
+            '\ttag {0}:{1} {2}'.format(tag_id, format_tag_name(tag_id),
+                                      format_tag_value(tag_id, tag_val))
+            for tag_id, tag_val in taglist))
         taglist.append((TAG_CUSTOM_NAME, 'TheGame'))
         t.add(Entity(eid, taglist))
 
@@ -41,7 +45,12 @@ class Processor:
                             [(t.name, t.value) for t in player.entity.tags])
 
             # TODO: are we interested in the battlenet id?
-            logging.debug('Found Player {0}:\n{1}'.format(player.id, player))
+            logging.info('Found Player: {0}'.format(player.id))
+            logging.debug('With tags: \n' + '\n'.join(
+                '\ttag {0}:{1} {2}'.format(tag_id, format_tag_name(tag_id),
+                                          format_tag_value(tag_id, tag_val))
+                for tag_id, tag_val in taglist))
+
             taglist.append((TAG_CUSTOM_NAME, 'Player{0}'.format(player.id)))
             t.add(Entity(eid, taglist))
 
