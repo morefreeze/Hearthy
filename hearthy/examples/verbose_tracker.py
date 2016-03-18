@@ -122,8 +122,59 @@ class HeathyServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
             # print(ret)
             return ret
 
+        @staticmethod
+        def get_player1(wd, params):
+            """Get my hero.
+            :wd: world
+            :params: None
+            :returns: my hero
+
+            """
+            return get_player(opponent=False)
+
+        @staticmethod
+        def get_player2(wd, params):
+            """Get opponent hero.
+            :wd: world
+            :params: None
+            :returns: my hero
+
+            """
+            return get_player(opponent=True)
+
+        @staticmethod
+        def get_player(wd, opponent):
+            """TODO: Docstring for get_player.
+            :returns: TODO
+
+            """
+            api = HearthyAPI(wd)
+            try:
+                player = api.get_player(opponent)
+            except Exception as e:
+                return 'No such player: %s' %(e)
+            return dict2str(player)
+
+        @staticmethod
+        def dict2str(d, step=0):
+            """Convert dict(embeded) to str.
+
+            :d: dict will be printed
+            :returns: string
+
+            """
+            ret = ''
+            for k, v in d.items():
+                if isinstance(v, dict):
+                    ret += "\t"*step+"{0}: (dict)\n{1}".format(k, dict2str(v, step+1))
+                else:
+                    ret += "\t"*step+"{0}: {1}\n".format(k, v)
+            return ret
+
         func_map = {
-            '/entity': 'parse_entity',
+            '/entity':  'parse_entity',
+            '/me':      'get_player1',
+            '/enemy':   'get_player2',
         }
 
 if __name__ == '__main__':
