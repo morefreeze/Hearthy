@@ -2,6 +2,11 @@ from hearthy import exceptions
 from hearthy.tracker.entity import Entity
 from hearthy.protocol.utils import format_tag_name
 
+HERO1 = 64
+HERO1_SKILL = 65
+HERO2 = 66
+HERO2_SKILL = 67
+
 class HearthyAPI:
 
     wd = {}
@@ -9,8 +14,8 @@ class HearthyAPI:
 
     def __init__(self, world):
         """Load one world. """
-        if 67 not in world:
-            raise exceptions.EntityNotFound(67)
+        if HERO2_SKILL not in world:
+            raise exceptions.EntityNotFound(HERO2_SKILL)
         self.wd = world
 
     def get_player(self, opponent):
@@ -18,10 +23,10 @@ class HearthyAPI:
         :opponent: boolean, if False return self otherwise return opponent
         :returns: player dict
         """
-        my_hero = self.wd[64]
-        my_skill = self.wd[65]
-        opponent_hero = self.wd[66]
-        opponent_skill = self.wd[67]
+        my_hero = self.wd[HERO1]
+        my_skill = self.wd[HERO1_SKILL]
+        opponent_hero = self.wd[HERO2]
+        opponent_skill = self.wd[HERO2_SKILL]
         if opponent:
             hero = opponent_hero
             skill = opponent_skill

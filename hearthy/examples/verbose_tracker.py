@@ -2,6 +2,7 @@ from hearthy import exceptions
 from hearthy.tracker import processor
 from hearthy.protocol.decoder import decode_packet
 from hearthy.protocol.utils import Splitter
+import hearthy.examples.api
 import threading
 import socketserver, socket
 import http.server
@@ -78,7 +79,7 @@ class HeathyServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
             for k in server_dict:
                 tmp_wd = server_dict[k]._t._world.transaction()
                 # normal world at least 67 items
-                if 67 in tmp_wd:
+                if api.HERO2_SKILL in tmp_wd:
                     wd = tmp_wd
 
             # sb is string builder for response data.
