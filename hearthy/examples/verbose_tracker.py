@@ -2,7 +2,7 @@ from hearthy import exceptions
 from hearthy.tracker import processor
 from hearthy.protocol.decoder import decode_packet
 from hearthy.protocol.utils import Splitter
-import hearthy.examples.api
+import hearthy.api.api as hapi
 import threading
 import socketserver, socket
 import http.server
@@ -79,7 +79,7 @@ class HeathyServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
             for k in server_dict:
                 tmp_wd = server_dict[k]._t._world.transaction()
                 # normal world at least 67 items
-                if api.HERO2_SKILL in tmp_wd:
+                if hapi.HERO2_SKILL in tmp_wd:
                     wd = tmp_wd
 
             # sb is string builder for response data.
@@ -97,8 +97,8 @@ class HeathyServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
                 sb += "Your path is: %s" %(o.path)
             s.wfile.write(sb.encode())
 
-        @staticmethod
-        def parse_entity(wd, params):
+        @classmethod
+        def parse_entity(cls, wd, params):
             """return entity detail
 
             :wd: world
@@ -123,41 +123,43 @@ class HeathyServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
             # print(ret)
             return ret
 
-        @staticmethod
-        def get_player1(wd, params):
+        @classmethod
+        def get_player1(cls, wd, params):
             """Get my hero.
             :wd: world
             :params: None
             :returns: my hero
 
             """
-            return get_player(opponent=False)
+            return cls.get_player(wd, opponent=False)
 
-        @staticmethod
-        def get_player2(wd, params):
+        @classmethod
+        def get_player2(cls, wd, params):
             """Get opponent hero.
             :wd: world
             :params: None
             :returns: my hero
 
             """
-            return get_player(opponent=True)
+            return cls.get_player(wd, opponent=True)
 
-        @staticmethod
-        def get_player(wd, opponent):
-            """TODO: Docstring for get_player.
-            :returns: TODO
+        @classmethod
+        def get_player(cls, wd, opponent):
+            """Get player from hapi.
+            :wd: world
+            :opponent: boolean, if False return self otherwise return opponent
+            :returns: string which is converted by dict.
 
             """
-            api = HearthyAPI(wd)
+            api = hapi.HearthyAPI(wd)
             try:
                 player = api.get_player(opponent)
             except Exception as e:
                 return 'No such player: %s' %(e)
-            return dict2str(player)
+            return cls.dict2str(player)
 
-        @staticmethod
-        def dict2str(d, step=0):
+        @classmethod
+        def dict2str(cls, d, step=0):
             """Convert dict(embeded) to str.
 
             :d: dict will be printed
@@ -165,9 +167,9 @@ class HeathyServer(socketserver.ThreadingMixIn, socketserver.TCPServer):
 
             """
             ret = ''
-            for k, v in d.items():
+            for k, v in sorted(d.items()):
                 if isinstance(v, dict):
-                    ret += "\t"*step+"{0}: (dict)\n{1}".format(k, dict2str(v, step+1))
+                    ret += "\t"*step+"{0}: (dict)\n{1}".format(k, cls.dict2str(v, step+1))
                 else:
                     ret += "\t"*step+"{0}: {1}\n".format(k, v)
             return ret

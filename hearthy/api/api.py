@@ -33,24 +33,24 @@ class HearthyAPI:
         else:
             hero = my_hero
             skill = my_skill
-        ret = entity2dict(hero)
-        ret['skill'] = entity2dict(skill)
+        ret = self.__class__.entity2dict(hero)
+        ret['skill'] = self.__class__.entity2dict(skill)
         return ret
 
-    @staticmethod
-    def entity2dict(e):
+    @classmethod
+    def entity2dict(cls, e):
         """Convert all tags of entity to dict with tag_name.
-
-        :entitiy: entity-like object (e.g.: a dict with some tag is ok)
+        :e: entity-like object (e.g.: a dict with some tag is ok)
         :returns: dict{'_raw': raw dict, tag_name: tag_value}
 
         """
         ret = {}
         ret['_raw'] = e
+        print (e.__dict__['_tags'].items())
         try:
-            for tag, v in e.items():
+            for tag, v in e.__dict__['_tags'].items():
                 ret[format_tag_name(tag)] = v
-        except TypeError as e:
+        except TypeError as exp:
             print(type(e), "is not iterable")
-            return ret
+        return ret
 
